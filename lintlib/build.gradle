@@ -1,0 +1,44 @@
+apply plugin: 'com.android.library'
+
+android {
+    compileSdkVersion 21
+    buildToolsVersion "21.1.0"
+
+    defaultConfig {
+        applicationId "demo.linkedin.com.lintlib"
+        minSdkVersion 14
+        targetSdkVersion 21
+        versionCode 1
+        versionName "1.0"
+    }
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+    }
+}
+
+configurations {
+    lintChecks
+}
+
+dependencies {
+    lintChecks project(path: ":lintrules", configuration: "lintChecks")
+}
+
+task copyLintJar(type: Copy){
+    from (configurations.lintChecks) {
+        rename {
+            String fileName ->
+                'lint.jar'
+        }
+    }
+    into 'build/intermediates/lint/'
+}
+
+
+project.afterEvaluate{
+    def compileLintTask = project.tasks.find {it.name == 'compileLint'}
+    compileLintTask.dependsOn(copyLintJar)
+}

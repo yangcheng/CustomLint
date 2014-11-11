@@ -1,0 +1,19 @@
+apply plugin: 'java'
+
+dependencies {
+    compile 'com.android.tools.lint:lint-api:23.2.2'
+}
+
+jar {
+    manifest {
+        attributes 'Lint-Registry': 'googleio.demo.MyIssueRegistry'
+    }
+}
+
+configurations {
+    lintChecks
+}
+
+dependencies {
+    lintChecks files(jar)
+}
